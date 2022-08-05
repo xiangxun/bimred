@@ -7,7 +7,7 @@ import FooterView from "./components/FooterView.vue";
 <template>
   <HeaderView msg="Hello"></HeaderView>
   <FooterView></FooterView>
-  <RouterView />
+  <RouterView></RouterView>
 </template>
 
 <style scoped></style>

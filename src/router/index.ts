@@ -18,9 +18,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/Home/index.vue"),
   },
   {
-    path: "/mep",
-    name: "mep",
-    component: () => import("../views/Mep/index.vue"),
+    path: "/bim",
+    name: "bim",
+    component: () => import("../views/BIM/index.vue"),
   },
 ];
 const router = createRouter({

@@ -1,6 +1,6 @@
 import {
   AmbientLight,
-  Clock,
+  Group,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
@@ -11,7 +11,6 @@ import {
   SphereGeometry,
   TextureLoader,
   Vector3,
-  WebGLCubeRenderTarget,
   WebGLRenderer,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -23,7 +22,6 @@ import earthImg from "../img/earth.jpg";
 import sunImg from "../img/sun.jpg";
 // import lensflare0 from "../img/lensflare0.png";
 // import lensflare3 from "../img/lensflare3.png";
-import stars from "../img/stars.jpg";
 
 export class Earth {
   private dom: HTMLElement;
@@ -35,14 +33,19 @@ export class Earth {
   constructor(dom: HTMLElement) {
     this.dom = dom;
     this.scene = new Scene();
-    this.camera = new PerspectiveCamera(
-      75,
+    const camera = new PerspectiveCamera(
+      30,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      20000
     );
+    //camera
+    camera.position.set(350, 200, 350);
+    camera.lookAt(new Vector3(0, 0, 0));
+    camera.up = new Vector3(0, 1, 0);
+    this.camera = camera;
+
     this.textureLoader = new TextureLoader();
-    const clock = new Clock();
     this.renderer = new WebGLRenderer({
       antialias: true, //消除锯齿
     });
@@ -55,11 +58,11 @@ export class Earth {
     this.renderer.render(this.scene, this.camera);
 
     // 背景
-    const starsTexture = this.textureLoader.load(stars, () => {
-      const rt = new WebGLCubeRenderTarget(starsTexture.image.height);
-      rt.fromEquirectangularTexture(this.renderer, starsTexture);
-      this.scene.background = rt.texture;
-    });
+    // const starsTexture = this.textureLoader.load(stars, () => {
+    //   const rt = new WebGLCubeRenderTarget(starsTexture.image.height);
+    //   rt.fromEquirectangularTexture(this.renderer, starsTexture);
+    //   this.scene.background = rt.texture;
+    // });
 
     //
     const controls: OrbitControls = new OrbitControls(
@@ -74,6 +77,7 @@ export class Earth {
     //日光
     const sunLight = new PointLight(0xffffff, 1.5);
     sunLight.position.set(0, 0, 0);
+    sunLight.castShadow = true;
     this.scene.add(sunLight);
 
     //lensflare
@@ -118,38 +122,72 @@ export class Earth {
       // alphaMap: sunTexture,
     });
     const sun = new Mesh(sunGeometry, sunMaterial);
-    this.scene.add(sun);
+    // this.scene.add(sun);
 
     //earth
-    const earthGeometry = new SphereGeometry(15, 50, 100);
+    const earthGeometry = new SphereGeometry(10, 50, 100);
     const earthTexture = this.textureLoader.load(earthImg);
     const earthMaterial = new MeshLambertMaterial({
       map: earthTexture,
       // normalMap: earthTexture,
     });
     const earth = new Mesh(earthGeometry, earthMaterial);
-    earth.position.set(0, 0, 0);
-    this.scene.add(earth);
+    earth.receiveShadow = true;
+    // earth.position.set(0, 0, 0);
+    // this.scene.add(earth);
 
-    //camera
-    this.camera.position.set(250, 0, 0);
-    // this.camera.lookAt(new Vector3(0, 0, 0));
+    //moon
+    const moonGeometry = new SphereGeometry(2, 50, 100);
+    // const moonTexture = this.textureLoader.load(earthImg);
+    const moonMaterial = new MeshLambertMaterial({
+      color: 0xeeeeee,
+      // map: moonTexture,
+      // normalMap: earthTexture,
+    });
+    const moon = new Mesh(moonGeometry, moonMaterial);
+    moon.castShadow = true;
+    // moon.position.set(0, 0, 0);
+    // this.scene.add(moon);
+
+    const solarSystem: Group = new Group();
+    this.scene.add(solarSystem);
+    solarSystem.add(sun);
+    const earthSystem: Group = new Group();
+    earthSystem.position.x = 200;
+    solarSystem.add(earthSystem);
+    earthSystem.add(earth);
+    // const box = new Box3().setFromObject(earthSystem);
+    // const boxHelper = new Box3Helper(box);
+    // this.scene.add(boxHelper);
+    const moonSystem: Group = new Group();
+    moonSystem.position.x = 20;
+    earthSystem.add(moonSystem);
+    moonSystem.add(moon);
+
     controls.update();
 
     const animate = () => {
-      const elapsed = clock.getElapsedTime();
-      sun.rotation.x += 0.0002;
-      sun.rotation.y += 0.0002;
+      // const elapsed = clock.getElapsedTime();
 
-      //地球绕太阳旋转
-      earth.position.set(
-        0,
-        -Math.sin(elapsed / 15) * 180,
-        Math.cos(elapsed / 15) * 180
-      );
+      // sun.rotation.y += 0.0002;
+      solarSystem.rotation.y += 0.0005;
+      solarSystem.rotation.z = 0.05;
+      sun.rotation.y -= 0.0004;
+      earthSystem.rotation.y += 0.01;
+      earth.rotation.y += 0.01;
+      earth.rotation.z = 0.01;
+
+      // 地球绕太阳旋转;
+      // earth.position.set(
+      //   Math.sin(elapsed / 15) * 250,
+      //   Math.sin(elapsed / 15) * 10,
+      //   Math.cos(elapsed / 15) * 240
+      // );
+
       //地球自旋
-      const axis = new Vector3(1, 0, 0);
-      earth.rotateOnAxis(axis, Math.PI / 100);
+      // const axis = new Vector3(0, 1, 0);
+      // earth.rotateOnAxis(axis, Math.PI / 100);
+      // earthSystem.rotateOnAxis(axis, Math.PI / 100);
       // required if controls.enableDamping or controls.autoRotate are set to true
       controls.update();
       this.renderer.render(this.scene, this.camera);

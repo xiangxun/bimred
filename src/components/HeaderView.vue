@@ -13,7 +13,7 @@ defineProps<{
     <div class="nav">
       <RouterLink :to="{ name: 'home' }">Home</RouterLink>
       &nbsp;
-      <RouterLink :to="{ name: 'mep' }">Mep</RouterLink>
+      <RouterLink :to="{ name: 'bim' }">BIM</RouterLink>
     </div>
     <div class="right"></div>
   </div>

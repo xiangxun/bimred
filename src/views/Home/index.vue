@@ -2,22 +2,16 @@
   <div class="home-canvas" ref="homeTarget"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { Earth } from "../../assets/ts/Earth";
+// import { Solar } from "./ts/Solar";
+// import { helperList } from "../../assets/ts/THelper";
 
-export default defineComponent({
-  setup() {
-    const homeTarget = ref();
-    onMounted(() => {
-      new Earth(homeTarget.value);
-      console.log(homeTarget.value);
-    });
-
-    return {
-      homeTarget,
-    };
-  },
+const homeTarget = ref();
+onMounted(() => {
+  const earth = new Earth(homeTarget.value);
+  // new Solar(homeTarget.value);
 });
 </script>
 
