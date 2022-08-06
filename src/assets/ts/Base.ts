@@ -1,12 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Scene,
   WebGLRenderer,
   PerspectiveCamera,
   Vector3,
   Object3D,
-  sRGBEncoding,
-  MOUSE,
-  Fog,
   OrthographicCamera,
   LinearEncoding,
   Color,
@@ -15,12 +13,11 @@ import {
   Mesh,
   BoxGeometry,
   MeshStandardMaterial,
+  MOUSE,
 } from "three";
 // import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 // import { PositionalAudioHelper } from "three/examples/jsm/helpers/POsitionalAudioHelper";
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 // import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import type { EventManager } from "./EventManager";
 
@@ -42,9 +39,8 @@ export class Base {
   constructor(dom: HTMLElement) {
     this.dom = dom;
 
-    this.cameraPosition = new Vector3(0, 3, 10);
+    this.cameraPosition = new Vector3(5, 5, 5);
     this.lookAtPosition = new Vector3(0, 0, 0);
-
     this.perspectiveCameraParams = {
       fov: 30,
       near: 0.1,
@@ -84,7 +80,6 @@ export class Base {
   createScene() {
     const scene = new Scene();
     this.scene = scene;
-    console.log(this.scene);
   }
 
   // 创建透视相机
@@ -95,8 +90,8 @@ export class Base {
     const camera = new PerspectiveCamera(fov, aspect, near, far);
     camera.position.copy(cameraPosition);
     camera.lookAt(lookAtPosition);
+    camera.up = new Vector3(0, 1, 0);
     this.camera = camera;
-    console.log(this.camera);
   }
   // 创建正交相机
   createOrthographicCamera() {
@@ -178,6 +173,13 @@ export class Base {
     const controls = new OrbitControls(this.camera, this.renderer.domElement);
     const { lookAtPosition } = this;
     controls.target.copy(lookAtPosition);
+    controls.enableDamping = true;
+    controls.mouseButtons = {
+      // LEFT: MOUSE.DOLLY,
+      LEFT: null as unknown as MOUSE,
+      MIDDLE: MOUSE.PAN,
+      RIGHT: MOUSE.ROTATE,
+    };
     controls.update();
     this.orbitControls = controls;
   }

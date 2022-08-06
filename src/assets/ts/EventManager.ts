@@ -49,6 +49,7 @@ export class EventManager extends EventDispatcher {
     dom.addEventListener("mousemove", (event) => {
       mouse.x = 2 * (event.offsetX / dom.offsetWidth) - 1;
       mouse.y = -2 * (event.offsetY / dom.offsetHeight) + 1;
+      // console.log(mouse.x, mouse.y);
       raycaster.setFromCamera(mouse, this.camera);
       const intersects = raycaster.intersectObjects(this.scene.children);
       this.dispatchEvent({
@@ -86,6 +87,7 @@ export class EventManager extends EventDispatcher {
 
     dom.addEventListener("mouseup", () => {
       // 选取物体的操作
+      console.log(mouse.x, mouse.y);
       raycaster.setFromCamera(mouse, this.camera);
       const intersection = raycaster.intersectObjects(this.scene.children);
 

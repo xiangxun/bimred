@@ -1,4 +1,5 @@
-import { earthImg, stars, sunImg } from "@/assets/ts/Texture";
+import { earthImg, sunImg } from "@/assets/ts/Texture";
+import { Base } from "@/assets/ts/Base";
 import {
   AmbientLight,
   BufferGeometry,
@@ -13,9 +14,7 @@ import {
   SphereGeometry,
   TextureLoader,
   Vector3,
-  WebGLCubeRenderTarget,
 } from "three";
-import { Base } from "@/assets/ts/Base";
 
 export class Solar extends Base {
   textureLoader!: TextureLoader;
@@ -27,12 +26,6 @@ export class Solar extends Base {
     super(dom);
     this.textureLoader = new TextureLoader();
     this.cameraPosition = new Vector3(350, 200, 350);
-    // 背景;
-    // const starsTexture = this.textureLoader.load(stars, () => {
-    //   const rt = new WebGLCubeRenderTarget(starsTexture.image.height);
-    //   rt.fromEquirectangularTexture(this.renderer, starsTexture);
-    //   this.scene.background = rt.texture;
-    // });
   }
   init(): void {
     this.createScene();

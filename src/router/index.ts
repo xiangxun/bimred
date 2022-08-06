@@ -3,9 +3,6 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
-// import HomeView from "../views/HomeView.vue";
-// import Mep from "../views/Mep/index.vue";
-// import Home from "../views/Home/index.vue";
 
 //路由信息
 const routes: Array<RouteRecordRaw> = [
@@ -15,12 +12,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       showHome: true,
     },
-    component: () => import("../views/Home/index.vue"),
+    component: () => import("../views/Home/SolarSystem.vue"),
   },
   {
     path: "/bim",
     name: "bim",
-    component: () => import("../views/BIM/index.vue"),
+    component: () => import("../views/BIM/BimModel.vue"),
   },
 ];
 const router = createRouter({

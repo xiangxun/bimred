@@ -2,51 +2,88 @@
   margin: 0;
   padding: 0;
 }
-.pr {
-  background-color: rgba(255, 255, 255, 0.6);
+.info {
+  background-color: rgba(144, 147, 153, 0.5);
   position: absolute;
-  padding: 10px;
+  top: 5px;
+  right: 5px;
+  padding: 5px;
   line-height: 1;
   border-radius: 5px;
   overflow: auto;
 }
 
-.styled-table {
+.info-table {
   border-collapse: collapse;
   font-size: 0.9em;
   font-family: sans-serif;
-  min-width: 400px;
+  min-width: 200px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   display: block;
-  white-space: nowrap;
+  white-space: wrap;
 }
 
-.styled-table thead tr {
-  background-color: #009879;
+.info-table thead tr {
+  background-color: #dd0000;
   color: #ffffff;
   text-align: left;
 }
 
-.styled-table thead td {
-  padding: 200px;
+.info-table thead td {
+  padding: 1px;
 }
 
-.styled-table th,
-.styled-table td {
+.info-table th,
+.info-table td {
   padding: 12px 15px;
 }
-.styled-table tbody {
+.info-table tbody {
   height: 500px;
   overflow: scroll;
 }
-.styled-table tbody tr {
-  border-bottom: 1px solid #dddddd;
+.info-table tbody td:first-of-type {
+  width: 100px;
+}
+.info-table tbody tr {
+  background-color: #440000;
+  color: wheat;
+  opacity: 0.7;
 }
 
-.styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
+.info-table tbody tr:nth-of-type(even) {
+  background-color: #660000;
+  color: wheat;
 }
 
-.styled-table tbody tr:last-of-type {
-  border-bottom: 5px solid #009879;
+.info-table tbody tr:last-of-type {
+  border-bottom: 5px solid #660000;
+}
+
+/* 美化滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  width: 6px;
+  background: rgba(#101f1c, 0.1);
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(144, 147, 153, 0.5);
+  background-clip: padding-box;
+  min-height: 28px;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(144, 147, 153, 0.3);
 }
