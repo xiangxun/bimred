@@ -3,15 +3,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { Earth } from "../../assets/ts/Earth";
-// import { Solar } from "./ts/Solar";
+import { onMounted, onUpdated, ref } from "vue";
+// import { Earth } from "../../assets/ts/Earth";
+import { Solar } from "./ts/Solar";
 // import { helperList } from "../../assets/ts/THelper";
 
 const homeTarget = ref();
+// const solar = new Solar(homeTarget.value);
 onMounted(() => {
-  const earth = new Earth(homeTarget.value);
-  // new Solar(homeTarget.value);
+  const solar = new Solar(homeTarget.value);
+  // new Earth(homeTarget.value);
+  solar.init();
+});
+onUpdated(() => {
+  // solar.init();
 });
 </script>
 

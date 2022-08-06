@@ -9,24 +9,30 @@ import {
   Fog,
   OrthographicCamera,
   LinearEncoding,
+  Color,
+  AmbientLight,
+  DirectionalLight,
+  Mesh,
+  BoxGeometry,
+  MeshStandardMaterial,
 } from "three";
 // import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 // import { PositionalAudioHelper } from "three/examples/jsm/helpers/POsitionalAudioHelper";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
-import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
-import { EventManager } from "./EventManager";
+// import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
+import type { EventManager } from "./EventManager";
 
-const calcAspect = (el: HTMLElement) => el.clientWidth / el.clientHeight;
+const calcAspect = () => window.innerWidth / window.innerHeight;
 
 export class Base {
   public dom: HTMLElement;
-  public renderer: WebGLRenderer;
-  public eventManager: EventManager;
-  public scene: Scene;
-  public orbitControls: OrbitControls;
-  public camera: PerspectiveCamera | OrthographicCamera;
+  public renderer!: WebGLRenderer;
+  public eventManager!: EventManager;
+  public scene!: Scene;
+  public orbitControls!: OrbitControls;
+  public camera!: PerspectiveCamera | OrthographicCamera;
   public cameraPosition: Vector3;
   public lookAtPosition: Vector3;
   public rendererParams: Record<string, any>;
@@ -36,13 +42,13 @@ export class Base {
   constructor(dom: HTMLElement) {
     this.dom = dom;
 
-    this.cameraPosition = new Vector3(5, 5, 5);
+    this.cameraPosition = new Vector3(0, 3, 10);
     this.lookAtPosition = new Vector3(0, 0, 0);
 
     this.perspectiveCameraParams = {
-      fov: 75,
+      fov: 30,
       near: 0.1,
-      far: 100,
+      far: 2000,
     };
     this.orthographicCameraParams = {
       zoom: 2,
@@ -52,122 +58,10 @@ export class Base {
     this.rendererParams = {
       outputEncoding: LinearEncoding,
       config: {
-        alpha: true,
+        // alpha: true,
         antialias: true,
       },
     };
-
-    const renderer = new WebGLRenderer({
-      antialias: true,
-    });
-    renderer.shadowMap.enabled = true; //阴影可见
-    renderer.localClippingEnabled = true; //剖切局部效果
-    renderer.outputEncoding = sRGBEncoding;
-
-    const scene = new Scene();
-    scene.fog = new Fog(0xffffff * Math.random(), 0, 750);
-    const camera = new PerspectiveCamera(
-      45,
-      dom.offsetWidth / dom.offsetHeight,
-      1,
-      2000
-    );
-    camera.position.copy(this.cameraPosition);
-    camera.lookAt(new Vector3(0, 0, 0));
-    camera.up = new Vector3(0, 1, 0);
-
-    //初始化OrbitControls控制器
-    const orbitControls: OrbitControls = new OrbitControls(
-      camera,
-      renderer.domElement
-    );
-    orbitControls.enableDamping = true;
-    orbitControls.mouseButtons = {
-      // LEFT: MOUSE.DOLLY,
-      LEFT: null as unknown as MOUSE,
-      MIDDLE: MOUSE.PAN,
-      RIGHT: MOUSE.ROTATE,
-    };
-
-    //
-    // const pointLockControls = new PointerLockControls(
-    //   camera,
-    //   renderer.domElement
-    // );
-
-    const flyControls = new FlyControls(camera, renderer.domElement);
-    flyControls.movementSpeed = 10;
-    flyControls.rollSpeed = Math.PI / 24;
-    flyControls.autoForward = false;
-
-    //初始化transformControls
-    const transformControls: TransformControls = new TransformControls(
-      camera,
-      renderer.domElement
-    );
-
-    //判断此次鼠标事件是否为变换事件
-    let transFlag = false;
-    transformControls.addEventListener("mouseDown", () => {
-      transFlag = true;
-      console.log(transFlag);
-    });
-
-    //事件管理
-    const eventManager = new EventManager({
-      dom: renderer.domElement,
-      scene: scene,
-      camera: camera,
-    });
-
-    document.addEventListener("keyup", (event) => {
-      console.log(event);
-      switch (event.key) {
-        case "e":
-          transformControls.mode = "translate";
-          //切换至平移模式
-          break;
-        case "r":
-          transformControls.mode = "rotate";
-          //切换至旋转模式
-          break;
-        case "s":
-          transformControls.mode = "scale";
-          //切换至缩放模式
-          break;
-
-        default:
-          break;
-      }
-    });
-
-    dom.appendChild(renderer.domElement);
-    renderer.setSize(dom.offsetWidth, dom.offsetHeight);
-    renderer.render(scene, camera);
-
-    // const clock = new Clock();
-    const animate = () => {
-      // const delta = clock.getDelta();
-      orbitControls.update();
-      // flyControls.update(delta);
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    };
-    animate();
-    window.addEventListener("resize", () => {
-      //更新相机
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      //更新渲染
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    });
-
-    this.orbitControls = orbitControls;
-    this.eventManager = eventManager;
-    this.renderer = renderer;
-    this.camera = camera;
-    this.scene = scene;
   }
 
   addObject(...object: Object3D[]) {
@@ -175,25 +69,34 @@ export class Base {
       this.scene.add(elem);
     });
   }
-  //初识化
+  //初始化
   init() {
     this.createScene();
+    this.createPerspectiveCamera();
+    this.createRenderer();
+    this.createMesh();
+    this.createLight();
+    this.createOrbitControls();
+    this.addListeners();
+    this.setLoop();
   }
   //创建场景
   createScene() {
     const scene = new Scene();
     this.scene = scene;
+    console.log(this.scene);
   }
 
   // 创建透视相机
   createPerspectiveCamera() {
     const { perspectiveCameraParams, cameraPosition, lookAtPosition } = this;
     const { fov, near, far } = perspectiveCameraParams;
-    const aspect = calcAspect(this.dom);
+    const aspect = calcAspect();
     const camera = new PerspectiveCamera(fov, aspect, near, far);
     camera.position.copy(cameraPosition);
     camera.lookAt(lookAtPosition);
     this.camera = camera;
+    console.log(this.camera);
   }
   // 创建正交相机
   createOrthographicCamera() {
@@ -206,9 +109,8 @@ export class Base {
   }
   // 更新正交相机参数
   updateOrthographicCameraParams() {
-    const { dom } = this;
     const { zoom, near, far } = this.orthographicCameraParams;
-    const aspect = calcAspect(dom);
+    const aspect = calcAspect();
     this.orthographicCameraParams = {
       left: -zoom * aspect,
       right: zoom * aspect,
@@ -224,11 +126,13 @@ export class Base {
     const { rendererParams } = this;
     const { outputEncoding, config } = rendererParams;
     const renderer = new WebGLRenderer(config);
-    renderer.setSize(this.dom.clientWidth, this.dom.clientHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputEncoding = outputEncoding;
     this.resizeRendererToDisplaySize();
     this.dom.appendChild(renderer.domElement);
+    console.log(renderer);
     this.renderer = renderer;
+    // this.renderer.setClearColor(0x000000, 0);
   }
   // 调整渲染器尺寸
   resizeRendererToDisplaySize() {
@@ -247,17 +151,47 @@ export class Base {
     }
     return isResizeNeeded;
   }
+  // 创建网格
+  createMesh() {
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshStandardMaterial({
+        color: new Color("#d9dfc8"),
+      }),
+      position = new Vector3(0, 0, 0);
+
+    const mesh = new Mesh(geometry, material);
+    mesh.position.copy(position);
+    console.log(this.scene, mesh);
+    this.scene.add(mesh);
+  }
+  // 创建光源
+  createLight() {
+    const dirLight = new DirectionalLight(new Color("#ffff00"), 0.5);
+    dirLight.position.set(0, 50, 0);
+    console.log(dirLight);
+    this.scene.add(dirLight);
+    const ambiLight = new AmbientLight(new Color("#f00fff"), 0.4);
+    this.scene.add(ambiLight);
+  }
+  // 创建轨道控制
+  createOrbitControls() {
+    const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    const { lookAtPosition } = this;
+    controls.target.copy(lookAtPosition);
+    controls.update();
+    this.orbitControls = controls;
+  }
   // 监听事件
   addListeners() {
     this.onResize();
   }
   // 监听画面缩放
   onResize() {
-    window.addEventListener("resize", (e) => {
+    window.addEventListener("resize", () => {
       if (this.camera instanceof PerspectiveCamera) {
-        const aspect = calcAspect(this.dom);
+        const aspect = calcAspect;
         const camera = this.camera as PerspectiveCamera;
-        camera.aspect = aspect;
+        camera.aspect = aspect();
         camera.updateProjectionMatrix();
       } else if (this.camera instanceof OrthographicCamera) {
         this.updateOrthographicCameraParams();
@@ -272,7 +206,30 @@ export class Base {
         camera.far = far;
         camera.updateProjectionMatrix();
       }
+      // this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.setSize(this.dom.clientWidth, this.dom.clientHeight);
+    });
+  }
+  // 动画
+  update() {
+    console.log("animation");
+  }
+  // 渲染
+  setLoop() {
+    this.renderer.setAnimationLoop(() => {
+      this.resizeRendererToDisplaySize();
+      this.update();
+      if (this.orbitControls) {
+        this.orbitControls.update();
+      }
+      // if (this.stats) {
+      //   this.stats.update();
+      // }
+      // if (this.composer) {
+      //   this.composer.render();
+      // } else {
+      this.renderer.render(this.scene, this.camera);
+      // }
     });
   }
 }
