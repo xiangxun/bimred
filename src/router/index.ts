@@ -19,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "bim",
     component: () => import("../views/BIM/BimModel.vue"),
   },
+  {
+    path: "/cineroom",
+    name: "cineroom",
+    component: () => import("../views/CineRoom/CineRoom.vue"),
+  },
 ];
 const router = createRouter({
   //路由模式

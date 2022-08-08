@@ -11,34 +11,34 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { Base } from "@/assets/ts/Base";
-import { basicObjectList } from "@/assets/ts/BasicObject";
-import { lightsList } from "@/assets/ts/Light";
+import { Cineroom } from "./ts/Cineroom.ts";
+import { basicObjectList } from "./ts/BasicObject";
+import { lightsList } from "./ts/Light";
 import { gltfPromise } from "@/assets/ts/LoadModel";
-import { VideoPlayer } from "@/assets/ts/MediaPlayer";
+import { VideoPlayer } from "./ts/MediaPlayer";
 import MediaPlayer from "@/components/MediaPlayer.vue";
-// import { helperList } from "@/assets/ts/Helper";
-import { lyric, lyricList, lyricSprite } from "@/assets/ts/Lyric";
+// import { helperList } from "./ts/Helper";
+import { lyric, lyricList, lyricSprite } from "./ts/Lyric";
 const playerRef = ref();
 const threeTarget = ref();
 const enter = ref();
 onMounted(() => {
-  const base = new Base(threeTarget.value);
-  base.addObject(...basicObjectList);
-  base.addObject(...lightsList);
+  const cineroom = new Cineroom(threeTarget.value);
+  cineroom.addObject(...basicObjectList);
+  cineroom.addObject(...lightsList);
 
   const videoPlayer = new VideoPlayer(playerRef.value.videotarget);
-  base.addObject(videoPlayer.screen);
+  cineroom.addObject(videoPlayer.screen);
 
   gltfPromise.then((gltfModel) => {
     console.log("@", gltfModel);
-    base.addObject(gltfModel);
+    cineroom.addObject(gltfModel);
   });
-  // base.addObject(...helperList);
+  // cineroom.addObject(...helperList);
   enter.value.addEventListener("click", function () {
-    base.playMusic(), false;
+    cineroom.playMusic(), false;
   });
-  base.addObject(...lyricList);
+  cineroom.addObject(...lyricList);
 });
 
 let isShow = ref(true);

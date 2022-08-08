@@ -95,7 +95,7 @@ export class Solar extends Base {
     this.sun = sun;
     this.earth = earth;
   }
-  update(): void {
+  animate(): void {
     const { solarSystem, earthSystem, sun, earth } = this;
     solarSystem.rotation.y += 0.0005;
     solarSystem.rotation.z = 0.05;
@@ -106,7 +106,7 @@ export class Solar extends Base {
   }
   createStars() {
     // stars
-    const radius = 6;
+    const radius = 2;
     const r = radius,
       starsGeometry = [new BufferGeometry(), new BufferGeometry()];
 

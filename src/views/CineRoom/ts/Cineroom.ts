@@ -1,4 +1,4 @@
-import { AudioPlayer } from "@/assets/ts/MediaPlayer";
+import { AudioPlayer } from "@/views/CineRoom/ts/MediaPlayer";
 import {
   Scene,
   WebGLRenderer,

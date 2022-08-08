@@ -12,7 +12,7 @@ import {
   Box3,
   Plane,
 } from "three";
-import { clipPlane, planeHelper } from "./ClippingBox";
+import { clipPlane, planeHelper } from "../../../assets/ts/ClippingBox";
 // import { videoTexture } from "./TTextures";
 export const basicObjectList: Object3D[] = [];
 

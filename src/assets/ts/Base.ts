@@ -17,6 +17,7 @@ import {
 } from "three";
 // import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import type { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 // import { PositionalAudioHelper } from "three/examples/jsm/helpers/POsitionalAudioHelper";
 // import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 import type { EventManager } from "./EventManager";
@@ -35,6 +36,7 @@ export class Base {
   public rendererParams: Record<string, any>;
   public perspectiveCameraParams: Record<string, any>;
   public orthographicCameraParams: Record<string, any>;
+  public composer!: EffectComposer;
 
   constructor(dom: HTMLElement) {
     this.dom = dom;
@@ -146,7 +148,7 @@ export class Base {
     }
     return isResizeNeeded;
   }
-  // 创建网格
+  // 创建Mesh
   createMesh() {
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshStandardMaterial({
@@ -197,7 +199,7 @@ export class Base {
         camera.updateProjectionMatrix();
       } else if (this.camera instanceof OrthographicCamera) {
         this.updateOrthographicCameraParams();
-        const camera = this.camera as THREE.OrthographicCamera;
+        const camera = this.camera as OrthographicCamera;
         const { left, right, top, bottom, near, far } =
           this.orthographicCameraParams;
         camera.left = left;
@@ -213,25 +215,25 @@ export class Base {
     });
   }
   // 动画
-  update() {
+  animate() {
     console.log("animation");
   }
   // 渲染
   setLoop() {
     this.renderer.setAnimationLoop(() => {
       this.resizeRendererToDisplaySize();
-      this.update();
+      this.animate();
       if (this.orbitControls) {
         this.orbitControls.update();
       }
       // if (this.stats) {
       //   this.stats.update();
       // }
-      // if (this.composer) {
-      //   this.composer.render();
-      // } else {
-      this.renderer.render(this.scene, this.camera);
-      // }
+      if (this.composer) {
+        this.composer.render();
+      } else {
+        this.renderer.render(this.scene, this.camera);
+      }
     });
   }
 }

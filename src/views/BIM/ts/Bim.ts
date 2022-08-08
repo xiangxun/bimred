@@ -1,3 +1,7 @@
+import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Base } from "@/assets/ts/Base";
 import { EventManager } from "@/assets/ts/EventManager";
@@ -14,6 +18,7 @@ import {
   Mesh,
   Clock,
   MeshLambertMaterial,
+  Vector2,
 } from "three";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
@@ -23,6 +28,8 @@ export class Bim extends Base {
   flyControls!: FlyControls;
   transformControls!: TransformControls;
   infoDiv!: HTMLElement | null;
+  bloomPass!: UnrealBloomPass;
+  outlinePass!: OutlinePass;
   constructor(dom: HTMLElement) {
     super(dom);
     this.cameraPosition.set(200, 200, 200);
@@ -50,9 +57,10 @@ export class Bim extends Base {
     this.createOrbitControls();
     this.createTransformControls();
     this.createTable();
+    this.createComposer();
     this.createEvent();
     // this.createFlyControls();
-    // this.update();
+    // this.animate();
     this.addListeners();
     this.setLoop();
   }
@@ -79,6 +87,7 @@ export class Bim extends Base {
       this.camera,
       this.renderer.domElement
     );
+    transformControls.raycast = () => {};
     //设置transformControls的模式
     document.addEventListener("keyup", (event) => {
       console.log(event);
@@ -103,18 +112,18 @@ export class Bim extends Base {
     this.transformControls = transformControls;
   }
   createEvent() {
-    // //初始化transformControls
+    //初始化transformControls
     // const transformControls: TransformControls = new TransformControls(
     //   this.camera,
     //   this.renderer.domElement
     // );
-    const { transformControls } = this;
+    // const { transformControls } = this;
     //判断此次鼠标事件是否为变换事件
-    let transFlag = false;
-    transformControls.addEventListener("mouseDown", () => {
-      transFlag = true;
-      console.log("transFlag", transFlag);
-    });
+    // let transFlag = false;
+    // transformControls.addEventListener("mouseDown", () => {
+    //   transFlag = true;
+    //   console.log("transFlag", transFlag);
+    // });
 
     //事件管理
     const eventManager = new EventManager({
@@ -124,7 +133,11 @@ export class Bim extends Base {
     });
 
     //鼠标以上时物体高亮
-    let cacheObject: Mesh | null = null;
+    const cacheMaterial = new MeshBasicMaterial({
+      opacity: 0.5,
+      transparent: true,
+    });
+    let cacheObject: Mesh | null = new Mesh(undefined, cacheMaterial);
     eventManager.addEventListener("mousemove", (event) => {
       if (event.intersects.length) {
         const intersected = event.intersects[0].object;
@@ -132,15 +145,18 @@ export class Bim extends Base {
         if (intersected === cacheObject) {
           return;
         } else if (intersected !== cacheObject && cacheObject) {
-          (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+          // (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+          this.outlinePass.selectedObjects = [];
         }
         if (intersected.material) {
-          intersected.material.color.multiplyScalar(2);
+          this.outlinePass.selectedObjects = [intersected];
+          // intersected.material.color.multiplyScalar(2);
           cacheObject = intersected;
         }
       } else {
         if (cacheObject) {
-          (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+          // (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+          this.outlinePass.selectedObjects = [];
           cacheObject = null;
         }
       }
@@ -152,27 +168,30 @@ export class Bim extends Base {
       const { scene } = this;
       clearTimeout(timer);
       timer = setTimeout(() => {
-        if (transFlag) {
-          transFlag = false;
-          console.log("transFlag1", transFlag);
-          return false;
-        }
+        // if (transFlag) {
+        //   transFlag = false;
+        //   console.log("transFlag1", transFlag);
+        //   return false;
+        // }
         if (event.intersection.length) {
           const object = event.intersection[0].object as Object3D;
           console.log(object);
           if (object.type === "TransformControlsPlane") {
-            transformControls.detach();
-            scene.remove(transformControls);
+            // transformControls.detach();
+            // scene.remove(transformControls);
+            this.outlinePass.selectedObjects = [];
             if (this.infoDiv) {
               this.infoDiv.style.visibility = "hidden";
             }
           } else {
-            transformControls.setSize(0.5);
-            scene.add(transformControls);
-            transformControls.attach(
-              object
-              // object.parent instanceof Group ? object.parent : object
-            );
+            this.outlinePass.selectedObjects = [object];
+            // transformControls.setSize(0.5);
+            // scene.add(transformControls);
+            // transformControls.attach(
+            //   object
+            //   // object.parent instanceof Group ? object.parent : object
+            // );
+            // this.bloomPass
             if (this.infoDiv) {
               this.infoDiv.style.visibility = "visible";
             }
@@ -180,8 +199,9 @@ export class Bim extends Base {
             this.generateTable(object.userData);
           }
         } else {
-          transformControls.detach();
-          scene.remove(transformControls);
+          // transformControls.detach();
+          // scene.remove(transformControls);
+          this.outlinePass.selectedObjects = [];
           if (this.infoDiv) {
             this.infoDiv.style.visibility = "hidden";
           }
@@ -193,8 +213,8 @@ export class Bim extends Base {
     eventManager.addEventListener("dblclick", (event) => {
       const { scene, camera, orbitControls } = this;
       clearTimeout(timer);
-      transformControls.detach();
-      scene.remove(transformControls);
+      // transformControls.detach();
+      // scene.remove(transformControls);
       if (event.intersection.length) {
         const object = event.intersection[0].object as Object3D;
         camera.lookAt(object.position);
@@ -216,7 +236,7 @@ export class Bim extends Base {
     this.flyControls = flyControls;
     console.log(flyControls);
   }
-  update(): void {
+  animate(): void {
     const clock = new Clock();
     const delta = clock.getDelta();
     // this.flyControls.update(delta);
@@ -280,8 +300,42 @@ export class Bim extends Base {
     if (infoDiv) {
       infoDiv.innerHTML = "";
       infoDiv.style.width = "350px";
-      infoDiv.style.height = "450px";
+      infoDiv.style.height = "500px";
       infoDiv.appendChild(table);
     }
+  }
+  createComposer() {
+    const { renderer, scene, camera } = this;
+    const renderPass = new RenderPass(scene, camera);
+    const outlinePass = new OutlinePass(
+      new Vector2(window.innerWidth, window.innerHeight),
+      scene,
+      camera
+    );
+    outlinePass.edgeStrength = 10;
+    outlinePass.edgeGlow = 1;
+    outlinePass.usePatternTexture = false;
+    outlinePass.edgeThickness = 1;
+    outlinePass.pulsePeriod = 5;
+    outlinePass.visibleEdgeColor.set("#ff0055");
+    outlinePass.hiddenEdgeColor.set("#ffff00");
+
+    const bloomPass = new UnrealBloomPass(
+      new Vector2(window.innerWidth, window.innerHeight),
+      1,
+      0.4,
+      0.85
+    );
+    // bloomPass.threshold = 1;
+    // bloomPass.strength = 2;
+    // bloomPass.radius = 0.5;
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(renderPass);
+    // composer.addPass(bloomPass);
+    composer.addPass(outlinePass);
+    this.composer = composer;
+    this.outlinePass = outlinePass;
+    this.bloomPass = bloomPass;
   }
 }

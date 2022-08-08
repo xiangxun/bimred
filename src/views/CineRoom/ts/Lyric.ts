@@ -1,4 +1,4 @@
-import { lyricTexture } from "./Textures";
+import { lyricTexture } from "../../../assets/ts/Texture";
 import {
   Mesh,
   MeshStandardMaterial,

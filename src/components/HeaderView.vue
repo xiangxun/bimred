@@ -14,6 +14,8 @@ defineProps<{
       <RouterLink :to="{ name: 'home' }">Home</RouterLink>
       &nbsp;
       <RouterLink :to="{ name: 'bim' }">BIM</RouterLink>
+      &nbsp;
+      <RouterLink :to="{ name: 'cineroom' }">CineRoom</RouterLink>
     </div>
     <div class="right"></div>
   </div>
@@ -22,6 +24,7 @@ defineProps<{
 <style scoped>
 .greetings {
   position: absolute;
+  z-index: 2;
   width: 100%;
   display: grid;
   grid-template-columns: auto auto auto;

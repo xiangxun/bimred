@@ -4,7 +4,7 @@ import { Box3, DoubleSide, Group, Mesh, Object3D, Vector3 } from "three";
 import { clipPlane } from "./ClippingBox";
 
 // "https://www.gstatic.com/draco/versioned/decoders/1.4.3/"
-const dracoLoader = new DRACOLoader().setDecoderPath("loader/draco/");
+const dracoLoader = new DRACOLoader().setDecoderPath("draco/");
 const gltfLoader: GLTFLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 // export const gltfPromise1 = gltfLoader.loadAsync(
@@ -41,10 +41,14 @@ export const gltfPromise = new Promise<Group>((resolve, reject) => {
 
 export const bimPromise = new Promise<Group>((resolve, reject) => {
   gltfLoader
+    // .loadAsync("/gltfModel/RefrigerationRoom.glb")
+    // .loadAsync("/gltfModel/cineroomDraco.glb")
     .loadAsync("/gltfModel/buildingDraco.gltf")
+    // .loadAsync("/loader/dracoModel/dracoRoom.gltf")
     .then((gltf) => {
-      const gltfModel: Group = gltf.scene;
-      //将导入模型中心移到坐标原点
+      const gltfModel = gltf.scene;
+      // console.log(gltf, gltf.scene.children[0].children);
+      // 将导入模型中心移到坐标原点
       const box = new Box3().setFromObject(gltfModel);
       const center = box.getCenter(new Vector3());
       gltfModel.position.x += gltfModel.position.x - center.x;

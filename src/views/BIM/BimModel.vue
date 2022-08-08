@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { bimPromise } from "@/assets/ts/LoadModel";
 import { onMounted, ref } from "vue";
-import { useMepStore } from "../../stores/bim";
+import { useMepStore } from "../../store/bim";
 import { Bim } from "./ts/Bim";
 
 const store = useMepStore();
