@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Base } from "@/assets/ts/Base";
 import { EventManager } from "@/assets/ts/EventManager";
 import { hilly } from "@/assets/ts/Texture";
@@ -16,16 +16,12 @@ import {
   Box3,
   MeshBasicMaterial,
   Mesh,
-  Clock,
-  MeshLambertMaterial,
   Vector2,
 } from "three";
-import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
 export class Bim extends Base {
   loader!: TextureLoader;
-  flyControls!: FlyControls;
   transformControls!: TransformControls;
   infoDiv!: HTMLElement | null;
   bloomPass!: UnrealBloomPass;
@@ -54,19 +50,19 @@ export class Bim extends Base {
     this.createBackground();
     // this.createMesh();
     this.createLight();
-    this.createOrbitControls();
-    this.createTransformControls();
+    // this.createOrbitControls();
+    // this.createTransformControls();
+    this.createFlyControls();
     this.createTable();
     this.createComposer();
     this.createEvent();
-    // this.createFlyControls();
     // this.animate();
     this.addListeners();
     this.setLoop();
   }
   createLight() {
     //添加环境光
-    const ambientLight: AmbientLight = new AmbientLight(0xffffff, 0.3);
+    const ambientLight: AmbientLight = new AmbientLight(0xffffff, 1);
     this.scene.add(ambientLight);
     // 添加点光源
     const pointlight: PointLight = new PointLight(0xffffff, 1, 100);
@@ -175,30 +171,33 @@ export class Bim extends Base {
         // }
         if (event.intersection.length) {
           const object = event.intersection[0].object as Object3D;
+
           console.log(object);
-          if (object.type === "TransformControlsPlane") {
-            // transformControls.detach();
-            // scene.remove(transformControls);
-            this.outlinePass.selectedObjects = [];
-            if (this.infoDiv) {
-              this.infoDiv.style.visibility = "hidden";
-            }
-          } else {
-            this.outlinePass.selectedObjects = [object];
-            // transformControls.setSize(0.5);
-            // scene.add(transformControls);
-            // transformControls.attach(
-            //   object
-            //   // object.parent instanceof Group ? object.parent : object
-            // );
-            // this.bloomPass
-            if (this.infoDiv) {
-              this.infoDiv.style.visibility = "visible";
-            }
-            //@ts-ignore
-            this.generateTable(object.userData);
+          // if (object.type === "TransformControlsPlane") {
+          // transformControls.detach();
+          // scene.remove(transformControls);
+          // this.outlinePass.selectedObjects = [];
+          // if (this.infoDiv) {
+          //   this.infoDiv.style.visibility = "hidden";
+          // }
+          // } else {
+          this.outlinePass.selectedObjects = [object];
+
+          // transformControls.setSize(0.5);
+          // scene.add(transformControls);
+          // transformControls.attach(
+          //   object
+          //   // object.parent instanceof Group ? object.parent : object
+          // );
+          // this.bloomPass
+          if (this.infoDiv) {
+            this.infoDiv.style.visibility = "visible";
           }
+          //@ts-ignore
+          this.generateTable(object.userData);
+          // }
         } else {
+          // scene.remove(helper);
           // transformControls.detach();
           // scene.remove(transformControls);
           this.outlinePass.selectedObjects = [];
@@ -227,19 +226,6 @@ export class Bim extends Base {
       }
       console.log("dblclick");
     });
-  }
-  createFlyControls() {
-    const flyControls = new FlyControls(this.camera, this.renderer.domElement);
-    flyControls.movementSpeed = 10;
-    flyControls.rollSpeed = Math.PI / 24;
-    flyControls.autoForward = false;
-    this.flyControls = flyControls;
-    console.log(flyControls);
-  }
-  animate(): void {
-    const clock = new Clock();
-    const delta = clock.getDelta();
-    // this.flyControls.update(delta);
   }
 
   createTable() {

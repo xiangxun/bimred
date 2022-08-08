@@ -1,3 +1,4 @@
+import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Scene,
@@ -14,6 +15,7 @@ import {
   BoxGeometry,
   MeshStandardMaterial,
   MOUSE,
+  Clock,
 } from "three";
 // import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -30,6 +32,8 @@ export class Base {
   public eventManager!: EventManager;
   public scene!: Scene;
   public orbitControls!: OrbitControls;
+  public flyControls!: FlyControls;
+  delta!: number;
   public camera!: PerspectiveCamera | OrthographicCamera;
   public cameraPosition: Vector3;
   public lookAtPosition: Vector3;
@@ -40,6 +44,7 @@ export class Base {
 
   constructor(dom: HTMLElement) {
     this.dom = dom;
+    this.delta = new Clock().getDelta();
 
     this.cameraPosition = new Vector3(5, 5, 5);
     this.lookAtPosition = new Vector3(0, 0, 0);
@@ -74,7 +79,8 @@ export class Base {
     this.createRenderer();
     this.createMesh();
     this.createLight();
-    this.createOrbitControls();
+    // this.createOrbitControls();
+    // this.createFlyControls();
     this.addListeners();
     this.setLoop();
   }
@@ -185,6 +191,18 @@ export class Base {
     controls.update();
     this.orbitControls = controls;
   }
+  //创建飞行控制器
+  createFlyControls() {
+    const flyControls = new FlyControls(this.camera, this.renderer.domElement);
+    flyControls.movementSpeed = 1000;
+    flyControls.domElement = this.renderer.domElement;
+    flyControls.rollSpeed = Math.PI / 24;
+    // flyControls.autoForward = false;
+
+    flyControls.update(this.delta);
+    this.flyControls = flyControls;
+    console.log(flyControls);
+  }
   // 监听事件
   addListeners() {
     this.onResize();
@@ -216,7 +234,7 @@ export class Base {
   }
   // 动画
   animate() {
-    console.log("animation");
+    // console.log("animation");
   }
   // 渲染
   setLoop() {
@@ -226,11 +244,17 @@ export class Base {
       if (this.orbitControls) {
         this.orbitControls.update();
       }
+      if (this.flyControls) {
+        // const clock = new Clock();
+        // const delta = clock.getDelta();
+        this.flyControls.update(this.delta);
+      }
+
       // if (this.stats) {
       //   this.stats.update();
       // }
       if (this.composer) {
-        this.composer.render();
+        this.composer.render(this.delta);
       } else {
         this.renderer.render(this.scene, this.camera);
       }
