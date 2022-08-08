@@ -11,7 +11,7 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { Cineroom } from "./ts/Cineroom.ts";
+import { Cineroom } from "./ts/Cineroom";
 import { basicObjectList } from "./ts/BasicObject";
 import { lightsList } from "./ts/Light";
 import { gltfPromise } from "@/assets/ts/LoadModel";

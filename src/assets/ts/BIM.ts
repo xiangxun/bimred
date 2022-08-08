@@ -178,6 +178,7 @@ export class Mep {
     div.className = "pr";
     const prDiv: HTMLElement | null = document.querySelector("div.pr");
     this.prDiv = prDiv;
+    //@ts-ignore
     const generateTable = (data) => {
       console.log("data===", data);
       const table = document.createElement("table");
@@ -205,6 +206,7 @@ export class Mep {
           const cellFirst = document.createElement("td");
           const cellSecond = document.createElement("td");
           cellFirst.textContent = key;
+          //@ts-ignore
           cellSecond.textContent = value;
           row.appendChild(cellFirst);
           row.appendChild(cellSecond);
@@ -216,6 +218,7 @@ export class Mep {
             const cellFirst = document.createElement("td");
             const cellSecond = document.createElement("td");
             cellFirst.textContent = key;
+            //@ts-ignore
             cellSecond.textContent = value;
             row.appendChild(cellFirst);
             row.appendChild(cellSecond);
@@ -261,6 +264,7 @@ export class Mep {
         if (prDiv) {
           prDiv.style.visibility = "visible";
         }
+        //@ts-ignore
         generateTable(this.currentObject.userData);
 
         const outlineObjcets: Mesh[] = [];

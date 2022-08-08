@@ -376,6 +376,16 @@
   "resolved" "https://registry.npmmirror.com/@types/node/-/node-16.11.44.tgz"
   "version" "16.11.44"
 
+"@types/nprogress@^0.2.0":
+  "integrity" "sha512-1cYJrqq9GezNFPsWTZpFut/d4CjpZqA0vhqDUPFWYKF1oIyBz5qnoYMzR+0C/T96t3ebLAC1SSnwrVOm5/j74A=="
+  "resolved" "https://registry.npmmirror.com/@types/nprogress/-/nprogress-0.2.0.tgz"
+  "version" "0.2.0"
+
+"@types/qs@^6.9.7":
+  "integrity" "sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw=="
+  "resolved" "https://registry.npmmirror.com/@types/qs/-/qs-6.9.7.tgz"
+  "version" "6.9.7"
+
 "@types/three@^0.141.0":
   "integrity" "sha512-OJdKDgTPVBUgc+s74DYoy4aLznbFFC38Xm4ElmU1YwGNgR7GGFVvFCX7lpVgOsT6S1zSJtGdajTsOYE8/xY9nA=="
   "resolved" "https://registry.npmmirror.com/@types/three/-/three-0.141.0.tgz"

@@ -22,8 +22,8 @@ export const lyricSprite: Sprite = new Sprite(
     map: lyricTexture,
   })
 );
-lyricSprite.position.set(-30, 0, 0);
-lyricSprite.scale.set(16, 9, 1);
+lyricSprite.position.set(-30, 10, 0);
+lyricSprite.scale.set(4, 2.25, 1);
 lyricSprite.raycast = () => {};
 
 const info: Sprite = new Sprite(

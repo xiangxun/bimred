@@ -3,7 +3,7 @@ import sunImg from "../img/sun.jpg";
 import stars from "../img/stars.jpg";
 import hilly from "../img/hilly.jpg";
 import { CanvasEditor } from "./CanvasEditor";
-import { CanvasTexture, Texture, TextureLoader } from "three";
+import { CanvasTexture } from "three";
 
 export { earthImg, sunImg, stars, hilly };
 export const lyricTexture: CanvasTexture = new CanvasTexture(
@@ -16,15 +16,15 @@ export const lyricTexture: CanvasTexture = new CanvasTexture(
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "80px 黑体";
+    ctx.font = "100px 黑体";
     ctx.translate(960, 440);
 
     ctx.beginPath();
-    ctx.fillText(`111`, 0, 100);
+    ctx.fillText(`xiangxun`, 0, 80);
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.fillText("时间：2022年7月28日", 0, 200);
+    ctx.fillText("2022", 0, 220);
     ctx.closePath();
   }).canvas
 );
