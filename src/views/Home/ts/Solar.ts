@@ -8,6 +8,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  Object3D,
   PointLight,
   Points,
   PointsMaterial,
@@ -15,6 +16,7 @@ import {
   TextureLoader,
   Vector3,
 } from "three";
+import { EventManager } from "@/assets/ts/EventManager";
 
 export class Solar extends Base {
   textureLoader!: TextureLoader;
@@ -37,11 +39,12 @@ export class Solar extends Base {
     this.createLight();
     this.createSolar();
     this.createStars();
+    this.createEvent();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
-  createLight(): void {
+  createLight() {
     //环境光
     const light = new AmbientLight(0xffffee, 0.01); // soft white light
     this.scene.add(light);
@@ -95,7 +98,7 @@ export class Solar extends Base {
     this.sun = sun;
     this.earth = earth;
   }
-  animate(): void {
+  animate() {
     const { solarSystem, earthSystem, sun, earth } = this;
     solarSystem.rotation.y += 0.0005;
     solarSystem.rotation.z = 0.05;
@@ -188,5 +191,53 @@ export class Solar extends Base {
 
       this.scene.add(stars);
     }
+  }
+  createEvent() {
+    //事件管理
+    const eventManager = new EventManager({
+      dom: this.renderer.domElement,
+      scene: this.scene,
+      camera: this.camera,
+    });
+
+    //鼠标以上时物体高亮
+    const cacheMaterial = new MeshBasicMaterial({
+      opacity: 0.5,
+      transparent: true,
+    });
+    let cacheObject: Mesh | null = new Mesh(undefined, cacheMaterial);
+    eventManager.addEventListener("mousemove", (event) => {
+      if (event.intersects.length) {
+        const intersected = event.intersects[0].object;
+        // 对比新老物体
+        if (intersected === cacheObject) {
+          return;
+        } else if (intersected !== cacheObject && cacheObject) {
+          (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+        }
+        if (intersected.material) {
+          intersected.material.color.multiplyScalar(2);
+          cacheObject = intersected;
+        }
+      } else {
+        if (cacheObject) {
+          (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+
+          cacheObject = null;
+        }
+      }
+    });
+
+    //单击选中物体
+    eventManager.addEventListener("click", (event) => {
+      const { scene, camera, orbitControls } = this;
+      if (event.intersection.length) {
+        const object = event.intersection[0].object as Object3D;
+        console.log(object);
+        // camera.lookAt()
+        orbitControls.target.setFromMatrixPosition(object.matrixWorld);
+      } else {
+      }
+    });
   }
 }

@@ -27,12 +27,7 @@
     ></audio>
     <button class="file-select-btn" @click="fileId.click()">
       选择本地文件
-      <input
-        type="file"
-        ref="fileId"
-        @change="getLocalAudio"
-        class="file-input"
-      />
+      <input type="file" ref="fileId" @change="getLocalAudio" class="file-input" />
     </button>
     <button @click="playVideo" class="play">播放视频</button>
     <button @click="videoPause" class="pause">视频暂停</button>
@@ -57,8 +52,9 @@ const fileId = ref();
 const songurl = ref();
 const videourl = ref();
 const songid = ref("1148123");
-const mvid = ref(14360887);
+const mvid = ref(14551581);
 const songidInput = ref();
+// https://music.163.com/mv/?id=14551581&userid=135775831
 //https://music.163.com/song?id=1148123&userid=135775831
 onMounted(async () => {
   await store.getSongs(songid.value);

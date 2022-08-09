@@ -51,7 +51,7 @@ export class Bim extends Base {
     // this.createMesh();
     this.createLight();
     this.createOrbitControls();
-    // this.createTransformControls();
+    this.createTransformControls();
     // this.createFlyControls();
     this.createTable();
     this.createComposer();
@@ -83,7 +83,7 @@ export class Bim extends Base {
       this.camera,
       this.renderer.domElement
     );
-    transformControls.raycast = () => {};
+    // transformControls.raycast = () => {};
     //设置transformControls的模式
     document.addEventListener("keyup", (event) => {
       console.log(event);
@@ -108,18 +108,18 @@ export class Bim extends Base {
     this.transformControls = transformControls;
   }
   createEvent() {
-    //初始化transformControls
+    // 初始化transformControls
     // const transformControls: TransformControls = new TransformControls(
     //   this.camera,
     //   this.renderer.domElement
     // );
-    // const { transformControls } = this;
-    //判断此次鼠标事件是否为变换事件
-    // let transFlag = false;
-    // transformControls.addEventListener("mouseDown", () => {
-    //   transFlag = true;
-    //   console.log("transFlag", transFlag);
-    // });
+    const { transformControls } = this;
+    // 判断此次鼠标事件是否为变换事件
+    let transFlag = false;
+    transformControls.addEventListener("mouseDown", () => {
+      transFlag = true;
+      console.log("transFlag", transFlag);
+    });
 
     //事件管理
     const eventManager = new EventManager({
@@ -161,45 +161,48 @@ export class Bim extends Base {
     //单击选中物体
     let timer: number | undefined;
     eventManager.addEventListener("click", (event) => {
-      const { scene } = this;
+      const { scene, transformControls } = this;
       clearTimeout(timer);
       timer = setTimeout(() => {
-        // if (transFlag) {
-        //   transFlag = false;
-        //   console.log("transFlag1", transFlag);
-        //   return false;
-        // }
+        if (transFlag) {
+          transFlag = false;
+          console.log("transFlag1", transFlag);
+          return false;
+        }
         if (event.intersection.length) {
           const object = event.intersection[0].object as Object3D;
 
           console.log(object);
-          // if (object.type === "TransformControlsPlane") {
-          // transformControls.detach();
-          // scene.remove(transformControls);
-          // this.outlinePass.selectedObjects = [];
-          // if (this.infoDiv) {
-          //   this.infoDiv.style.visibility = "hidden";
-          // }
-          // } else {
-          this.outlinePass.selectedObjects = [object];
+          if (object.type === "TransformControlsPlane") {
+            transformControls.detach();
+            scene.remove(transformControls);
+            this.outlinePass.selectedObjects = [];
+            if (this.infoDiv) {
+              this.infoDiv.style.visibility = "hidden";
+            }
+          } else {
+            this.outlinePass.selectedObjects = [object];
+            // object.matrixWorld = object.modelViewMatrix.clone();
 
-          // transformControls.setSize(0.5);
-          // scene.add(transformControls);
-          // transformControls.attach(
-          //   object
-          //   // object.parent instanceof Group ? object.parent : object
-          // );
-          // this.bloomPass
-          if (this.infoDiv) {
-            this.infoDiv.style.visibility = "visible";
+            transformControls.setSize(0.5);
+            scene.add(transformControls);
+            transformControls.attach(
+              object
+              // object.parent instanceof Group ? object.parent : object
+            );
+            // transformControls.position.setFromMatrixPosition(
+            //   object.matrixWorld
+            // );
+            // this.bloomPass
+            if (this.infoDiv) {
+              this.infoDiv.style.visibility = "visible";
+            }
+            //@ts-ignore
+            this.generateTable(object.userData);
           }
-          //@ts-ignore
-          this.generateTable(object.userData);
-          // }
         } else {
-          // scene.remove(helper);
-          // transformControls.detach();
-          // scene.remove(transformControls);
+          transformControls.detach();
+          scene.remove(transformControls);
           this.outlinePass.selectedObjects = [];
           if (this.infoDiv) {
             this.infoDiv.style.visibility = "hidden";

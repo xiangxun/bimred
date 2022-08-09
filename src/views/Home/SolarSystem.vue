@@ -20,8 +20,11 @@ onUpdated(() => {
 });
 </script>
 
-<style>
-.three-canvas {
+<style scoped>
+.home-canvas {
+  position: fixed;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
 }

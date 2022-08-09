@@ -33,7 +33,7 @@ export class Base {
   public scene!: Scene;
   public orbitControls!: OrbitControls;
   public flyControls!: FlyControls;
-  delta!: number;
+  public delta!: number;
   public camera!: PerspectiveCamera | OrthographicCamera;
   public cameraPosition: Vector3;
   public lookAtPosition: Vector3;
