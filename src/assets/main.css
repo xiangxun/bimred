@@ -22,6 +22,21 @@ button:hover {
   background-color: aqua;
   color: blue;
 }
+.label {
+  background-color: rgba(144, 147, 153, 0.5);
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 5px;
+  line-height: 1;
+  border-radius: 5px;
+  width: auto;
+}
+.label p {
+  background-color: rgba(144, 147, 153, 0.5);
+  border-radius: 5px;
+  overflow: auto;
+}
 .info {
   background-color: rgba(144, 147, 153, 0.5);
   position: absolute;

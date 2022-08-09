@@ -50,9 +50,9 @@ export class Bim extends Base {
     this.createBackground();
     // this.createMesh();
     this.createLight();
-    // this.createOrbitControls();
+    this.createOrbitControls();
     // this.createTransformControls();
-    this.createFlyControls();
+    // this.createFlyControls();
     this.createTable();
     this.createComposer();
     this.createEvent();

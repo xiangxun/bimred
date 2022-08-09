@@ -4,7 +4,12 @@
     <div class="info">你好</div>
   </div>
   <div class="loading" ref="loading" v-show="isShow">
-    <div class="loadingtext">加载模型需要一些时间......</div>
+    <div class="loadingtext">
+      <div class="loadingEight">
+        <span></span>
+      </div>
+      <p><br />加载模型需要一些时间......</p>
+    </div>
   </div>
 </template>
 
@@ -33,7 +38,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .three-canvas {
   position: fixed;
   left: 0;
@@ -54,6 +59,46 @@ onMounted(() => {
 }
 .loadingtext {
   color: aliceblue;
-  font-size: 3em;
+  font-size: 1em;
+}
+.loadingEight {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto;
+  margin-top: 100px;
+  position: relative;
+  border: 5px solid #ff8888;
+  animation: turn 2s linear infinite;
+}
+.loadingEight span {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #ff8888;
+  position: absolute;
+  left: 50%;
+  margin-top: -15px;
+  margin-left: -15px;
+  animation: changeBgColor 2s linear infinite;
+}
+@keyframes changeBgColor {
+  0% {
+    background: red;
+  }
+  100% {
+    background: #ffeeee;
+  }
+}
+@keyframes turn {
+  0% {
+    -webkit-transform: rotate(0deg);
+    border-color: #ff8888;
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    border-color: #ffeeee;
+  }
 }
 </style>

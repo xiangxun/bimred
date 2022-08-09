@@ -111,6 +111,8 @@ export class Cineroom {
           // (cacheObject.material as MeshLambertMaterial).emissive.set(1);
         }
         if (intersected.material) {
+          //@ts-ignore
+          this.createLabel(intersected.userData);
           intersected.material.color.multiplyScalar(10);
           // intersected.material.transparent = true;
           // intersected.material.opacity = 0.01;
@@ -251,5 +253,18 @@ export class Cineroom {
     object.forEach((elem) => {
       this.scene.add(elem);
     });
+  }
+  createLabel(data: [key: string]) {
+    let labelDiv: HTMLElement | null = document.querySelector("div.label");
+    console.log("data===", data);
+    const p = document.createElement("p");
+    p.className = "label";
+    //@ts-ignore
+    const [key, value] = Object.entries(data);
+    p.textContent = [key, value].toString();
+    if (labelDiv) {
+      labelDiv.innerHTML = "";
+      labelDiv.appendChild(p);
+    }
   }
 }

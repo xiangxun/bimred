@@ -4,6 +4,7 @@
     <button @click="enterButton" ref="enter">Enter</button>
     <p class="tip">带上耳机食用更佳</p>
   </div>
+  <div class="label"></div>
   <div class="container">
     <MediaPlayer v-show="isShow" ref="playerRef"></MediaPlayer>
     <button @click="show">收起/展开</button>
