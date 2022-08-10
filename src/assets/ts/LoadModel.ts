@@ -43,9 +43,9 @@ export const bimPromise = new Promise<Group>((resolve, reject) => {
   gltfLoader
     // .loadAsync("/gltfModel/sample.glb")
     // .loadAsync("/gltfModel/cineroomDraco.glb")
-    .loadAsync("/gltfModel/buildingDraco.gltf")
+    // .loadAsync("/gltfModel/buildingDraco.gltf")
     // .loadAsync("/gltfModel/hotelD.gltf")
-    // .loadAsync("/loader/dracoModel/dracoRoom.gltf")
+    .loadAsync("/loader/dracoModel/dracoRoom.gltf")
     .then((gltf) => {
       const gltfModel = gltf.scene;
       // console.log(gltf, gltf.scene.children[0].children);

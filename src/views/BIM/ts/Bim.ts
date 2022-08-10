@@ -2,6 +2,7 @@
 import { OutlinePass } from "three/examples/jsm/postprocessing/OutlinePass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Base } from "@/assets/ts/Base";
 import { EventManager } from "@/assets/ts/EventManager";
@@ -18,7 +19,6 @@ import {
   Mesh,
   Vector2,
 } from "three";
-import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
 export class Bim extends Base {
   loader!: TextureLoader;
@@ -28,9 +28,9 @@ export class Bim extends Base {
   outlinePass!: OutlinePass;
   constructor(dom: HTMLElement) {
     super(dom);
-    this.cameraPosition.set(200, 200, 200);
+    this.cameraPosition.set(100, 100, 100);
     this.perspectiveCameraParams = {
-      fov: 60,
+      fov: 45,
       near: 0.1,
       far: 2000,
     };
@@ -62,7 +62,7 @@ export class Bim extends Base {
   }
   createLight() {
     //添加环境光
-    const ambientLight: AmbientLight = new AmbientLight(0xffffff, 1);
+    const ambientLight: AmbientLight = new AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
     // 添加点光源
     const pointlight: PointLight = new PointLight(0xffffff, 1, 100);
@@ -141,18 +141,18 @@ export class Bim extends Base {
         if (intersected === cacheObject) {
           return;
         } else if (intersected !== cacheObject && cacheObject) {
-          // (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
-          this.outlinePass.selectedObjects = [];
+          (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+          // this.outlinePass.selectedObjects = [];
         }
         if (intersected.material) {
-          this.outlinePass.selectedObjects = [intersected];
-          // intersected.material.color.multiplyScalar(2);
+          // this.outlinePass.selectedObjects = [intersected];
+          intersected.material.color.multiplyScalar(2);
           cacheObject = intersected;
         }
       } else {
         if (cacheObject) {
-          // (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
-          this.outlinePass.selectedObjects = [];
+          (cacheObject.material as MeshBasicMaterial).color.multiplyScalar(0.5);
+          // this.outlinePass.selectedObjects = [];
           cacheObject = null;
         }
       }
@@ -182,17 +182,18 @@ export class Bim extends Base {
             }
           } else {
             this.outlinePass.selectedObjects = [object];
+
             // object.matrixWorld = object.modelViewMatrix.clone();
 
             transformControls.setSize(0.5);
             scene.add(transformControls);
             transformControls.attach(
+              //@ts-ignore
               object
               // object.parent instanceof Group ? object.parent : object
             );
-            // transformControls.position.setFromMatrixPosition(
-            //   object.matrixWorld
-            // );
+            //@ts-ignore
+            // transformControls.position.copy(object.geometry.center());
             // this.bloomPass
             if (this.infoDiv) {
               this.infoDiv.style.visibility = "visible";
