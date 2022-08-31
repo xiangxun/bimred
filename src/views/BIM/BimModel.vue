@@ -1,5 +1,7 @@
 <template>
   <div class="three-canvas" ref="threeTarget"></div>
+  <ECharts></ECharts>
+  <!-- <RouterView /> -->
   <div>
     <div class="info">你好</div>
   </div>
@@ -18,6 +20,7 @@ import { bimPromise } from "@/assets/ts/LoadModel";
 import { onMounted, ref } from "vue";
 import { useMepStore } from "../../store/bim";
 import { Bim } from "./ts/Bim";
+import ECharts from "./ECharts.vue";
 
 const store = useMepStore();
 const threeTarget = ref();

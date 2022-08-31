@@ -7,8 +7,8 @@ defineProps<{
 <template>
   <div class="greetings">
     <div class="left">
-      <h3>{{ msg }}</h3>
-      <p>Welcome to my world</p>
+      <!-- <h3>{{ msg }}</h3> -->
+      <!-- <p>Welcome to my world</p> -->
     </div>
     <div class="nav">
       <RouterLink :to="{ name: 'home' }">Home</RouterLink>

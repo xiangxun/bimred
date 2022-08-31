@@ -106,10 +106,7 @@ export class EventManager extends EventDispatcher {
     dom.addEventListener("click", () => {
       // 选取物体的操作
       raycaster.setFromCamera(mouse, this.camera);
-      const intersection = raycaster.intersectObjects(
-        this.scene.children,
-        true
-      );
+      const intersection = raycaster.intersectObjects(this.scene.children);
 
       this.dispatchEvent({
         type: "click",
@@ -126,10 +123,7 @@ export class EventManager extends EventDispatcher {
     dom.addEventListener("dblclick", () => {
       // 选取物体的操作
       raycaster.setFromCamera(mouse, this.camera);
-      const intersection = raycaster.intersectObjects(
-        this.scene.children,
-        true
-      );
+      const intersection = raycaster.intersectObjects(this.scene.children);
 
       this.dispatchEvent({
         type: "dblclick",
