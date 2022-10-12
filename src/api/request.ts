@@ -3,7 +3,7 @@ import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 
 let requests = axios.create({
-  baseURL: "https://netease-cloud-music-api-path-yu.vercel.app",
+  baseURL: "https://www.lghb.top/",
   method: "get",
   withCredentials: true,
 });
