@@ -51,17 +51,19 @@ const store = useStore();
 const fileId = ref();
 const songurl = ref();
 const videourl = ref();
-const songid = ref("1148123");
+const songid = ref("1970560265");
 const mvid = ref(14551581);
 const songidInput = ref();
-// https://music.163.com/mv/?id=14551581&userid=135775831
-//https://music.163.com/song?id=1148123&userid=135775831
+// https://music.163.com/mv/?id=14551581
+//https://music.163.com/song?id=1970560265
 onMounted(async () => {
   await store.getSongs(songid.value);
   getLyricData();
   await store.getVideoUrl(mvid.value);
   videourl.value = store.videourl;
+  // songurl.value = store.songurl;
   songurl.value = store.songurl;
+  console.log("store.songurl", store.songurl);
 });
 
 let lrcArr: LineItem[] = [];
