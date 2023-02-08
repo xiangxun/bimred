@@ -4,7 +4,10 @@ import "nprogress/nprogress.css";
 
 let requests = axios.create({
   baseURL: "https://www.lghb.top/",
+<<<<<<< HEAD
   // baseURL: "http://cloud-music.pl-fe.cn/",
+=======
+>>>>>>> 455db1ab44945167cd0413b572d265325c42fdf6
   method: "get",
   withCredentials: true,
 });
