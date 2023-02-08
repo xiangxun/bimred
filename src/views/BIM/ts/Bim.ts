@@ -31,8 +31,8 @@ export class Bim extends Base {
   viewCube!: ViewCube;
   constructor(dom: HTMLElement) {
     super(dom);
-    // this.cameraPosition.set(100, 100, 100);
-    this.cameraPosition.set(0, 0, 10);
+    this.cameraPosition.set(100, 100, 100);
+    // this.cameraPosition.set(0, 0, 10);
     this.perspectiveCameraParams = {
       fov: 45,
       near: 0.1,

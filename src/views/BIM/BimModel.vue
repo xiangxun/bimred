@@ -1,10 +1,7 @@
 <template>
   <div class="three-canvas" ref="threeTarget"></div>
   <div class="cube">
-    <div class="viewCube"></div>
-  </div>
-  <div class="echarts">
-    <ECharts></ECharts>
+    <!-- <div class="viewCube"></div> -->
   </div>
 
   <!-- <RouterView /> -->
@@ -19,6 +16,7 @@
       <p><br />加载模型需要一些时间......</p>
     </div>
   </div>
+  <ECharts></ECharts>
 </template>
 
 <script setup lang="ts">
@@ -55,15 +53,14 @@ onMounted(() => {
   width: 100%;
   height: 100%;
 }
-.echarts {
-  position: fixed;
-}
+
 .cube {
   position: fixed;
   right: 10px;
   bottom: 10px;
 }
 .loading {
+  position: fixed;
   z-index: 3;
   background-color: #000000;
   opacity: 0.7;
