@@ -7,6 +7,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { Base } from "@/assets/ts/Base";
 import { EventManager } from "@/assets/ts/EventManager";
 import { hilly } from "@/assets/ts/Texture";
+import { ViewCube } from "./ViewCube";
 import {
   PointLight,
   AmbientLight,
@@ -24,11 +25,14 @@ export class Bim extends Base {
   loader!: TextureLoader;
   transformControls!: TransformControls;
   infoDiv!: HTMLElement | null;
+  viewCubeDiv!: HTMLElement | null;
   bloomPass!: UnrealBloomPass;
   outlinePass!: OutlinePass;
+  viewCube!: ViewCube;
   constructor(dom: HTMLElement) {
     super(dom);
-    this.cameraPosition.set(100, 100, 100);
+    // this.cameraPosition.set(100, 100, 100);
+    this.cameraPosition.set(0, 0, 10);
     this.perspectiveCameraParams = {
       fov: 45,
       near: 0.1,
@@ -53,6 +57,7 @@ export class Bim extends Base {
     this.createOrbitControls();
     this.createTransformControls();
     // this.createFlyControls();
+    this.createViewCube();
     this.createTable();
     this.createComposer();
     this.createEvent();
@@ -106,6 +111,26 @@ export class Bim extends Base {
       }
     });
     this.transformControls = transformControls;
+  }
+  createViewCube() {
+    // const div = document.createElement("div");
+    // div.className = "viewCube";
+    const viewCubeDiv: HTMLElement | null =
+      document.querySelector("div.viewCube");
+    console.log("viewCubeDiv", viewCubeDiv);
+    this.viewCubeDiv = viewCubeDiv;
+
+    if (viewCubeDiv) {
+      const viewCube = new ViewCube(viewCubeDiv);
+      console.log("viewCube", viewCube);
+      viewCube.viewCubeControls.addEventListener(
+        "angle-change",
+        ({ quaternion }) => {
+          this.camera.setRotationFromQuaternion(quaternion.invert());
+        }
+      );
+      this.viewCube = viewCube;
+    }
   }
   createEvent() {
     // 初始化transformControls
@@ -236,6 +261,7 @@ export class Bim extends Base {
     const div = document.createElement("div");
     div.className = "info";
     const infoDiv: HTMLElement | null = document.querySelector("div.info");
+    console.log("infoDiv", infoDiv);
     this.infoDiv = infoDiv;
   }
   generateTable(data: [key: string]) {
@@ -327,5 +353,47 @@ export class Bim extends Base {
     this.composer = composer;
     this.outlinePass = outlinePass;
     this.bloomPass = bloomPass;
+  }
+  // 动画
+  animate() {
+    //console.log("animation");
+  }
+  // 渲染
+  setLoop() {
+    this.renderer.setAnimationLoop(() => {
+      this.resizeRendererToDisplaySize();
+      this.animate();
+      if (this.orbitControls) {
+        // this.orbitControls.update();
+      }
+      if (this.flyControls) {
+        // const clock = new Clock();
+        // const delta = clock.getDelta();
+        this.flyControls.update(this.delta);
+      }
+      if (this.viewCube) {
+        // this.viewCube.cubeCamera.position.copy(this.camera.position);
+        console.log("this.camera.quaternion", this.camera.quaternion);
+        this.viewCube.viewCubeControls._cube.quaternion.copy(
+          this.camera.quaternion
+        );
+        // this.viewCube.cubeCamera.quaternion.copy(this.camera.quaternion);
+        // this.viewCube.cubeCamera.lookAt(this.scene.position);
+        // this.viewCube.viewCubeControls.update();
+      }
+
+      // if (this.stats) {
+      //   this.stats.update();
+      // }
+      if (this.composer) {
+        this.composer.render(this.delta);
+      } else {
+        this.renderer.render(this.scene, this.camera);
+        // this.viewCube.cubeRenderer.render(
+        //   this.viewCube.cubeScene,
+        //   this.viewCube.cubeCamera
+        // );
+      }
+    });
   }
 }

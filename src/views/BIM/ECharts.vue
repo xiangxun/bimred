@@ -24,8 +24,8 @@ import type {
   EChartsOption,
 } from "echarts";
 import Showers from "../../assets/img/showers_128.png";
-import Sunny from "../../assets/img/Sunny_128.png";
-import Cloudy from "../../assets/img/Cloudy_128.png";
+import Sunny from "../../assets/img/sunny_128.png";
+import Cloudy from "../../assets/img/cloudy_128.png";
 
 onMounted(async () => {
   console.log(rawData);

@@ -49,7 +49,7 @@ export class Base {
     this.cameraPosition = new Vector3(5, 5, 5);
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.perspectiveCameraParams = {
-      fov: 30,
+      fov: 45,
       near: 0.1,
       far: 2000,
     };

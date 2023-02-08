@@ -16,6 +16,7 @@ export const gltfPromise = new Promise<Group>((resolve, reject) => {
     .loadAsync("/gltfModel/cineroomDraco.glb")
     .then((gltf) => {
       const gltfModel: Group = gltf.scene;
+      // gltfModel.scale.set(100, 100, 100);
       //将导入模型中心移到坐标原点
       const box = new Box3().setFromObject(gltfModel);
       const center = box.getCenter(new Vector3());

@@ -1,6 +1,12 @@
 <template>
   <div class="three-canvas" ref="threeTarget"></div>
-  <ECharts></ECharts>
+  <div class="cube">
+    <div class="viewCube"></div>
+  </div>
+  <div class="echarts">
+    <ECharts></ECharts>
+  </div>
+
   <!-- <RouterView /> -->
   <div>
     <div class="info">你好</div>
@@ -48,6 +54,14 @@ onMounted(() => {
   top: 0;
   width: 100%;
   height: 100%;
+}
+.echarts {
+  position: fixed;
+}
+.cube {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
 }
 .loading {
   z-index: 3;
